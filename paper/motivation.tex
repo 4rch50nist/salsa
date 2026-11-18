@@ -59,26 +59,36 @@ its index.
 
 \input{rw_throughput_fig}
 \subsection{Pipelined Reads, Writes and Their Hazards}\label{sec:mot_rw}
-
 A tough problem to engineer systems around is one in which several reads and
-writes are in flight at once, all destined for the same nodes. An event in an
-order book, for example, changes a price level and is followed by a query about
-the book's depth, so reads and writes arrive in equal numbers.
+writes are in flight at once, all destined for the same nodes. In
+Fig.~\ref{fig:rw_throughput}, we run two distinct workloads through a pipeline
+that resolves hazards by stalling, and report the median number of cycles per
+operation.
 
-Fig.~\ref{fig:rw_throughput} quantifies what this costs a pipeline that could
-issue one operation every cycle. Here, every subsequent operation in need of an
-unfinished write must stall until the write is complete. The trace is NASDAQ
-ITCH order flow for eight symbols: 3.6 million order-book updates, each
-followed by a depth query at the best price of the side just updated. On it,
-the stalling pipeline needs 1.33 cycles per operation across the eight
-interleaved symbols, and 1.41 when it serves the book of the busiest symbol,
-QQQ, alone, because a single book crowds its updates onto one price ladder.
+In Fig.~\ref{fig:rw_throughput}(a), the trace is NASDAQ ITCH order flow for
+eight symbols~\cite{nasdaq2020itch}: a steady stream of 3.6 million order-book
+updates, each followed by a depth query at the best price of the side just
+updated. On it, the stalling pipeline needs 1.33 cycles per operation across
+the eight interleaved symbols, and 1.41 when it serves the book of the busiest
+symbol, QQQ, alone, because a single book crowds its updates onto one price
+ladder.
 
-A system that is to keep pace with such a workload must therefore accept a
+In Fig.~\ref{fig:rw_throughput}(b), the trace is genome coverage from a
+multiplexed SARS-CoV-2 nanopore run of 24 samples, replayed as minoTour
+monitors such runs~\cite{munro2023}: each read adds its coverage over its
+aligned span as it arrives, and every 60\,s the coverage of every amplicon in
+every sample is queried. A coverage update is a range update, applied as two
+point updates whose paths through the tree converge a few levels up, so the
+second stalls on the first. The trace therefore alternates between query
+sweeps, which never stall, and stretches of read updates at about 1.5 cycles
+per operation; Fig.~\ref{fig:rw_throughput}(c) magnifies one such burst.
+where the busiest sample alone needs 1.35 cycless, nearly as many as
+QQQ's book.
+
+A system that is to keep pace with such workloads must therefore accept a
 read and a write in the same stream every cycle, and \emph{handle hazards
 	gracefully}: neither padded with no-op bubbles nor fraught with stalls, which
-here cost 33\% to 41\% more cycles per operation.
-
+here cost up to 50\% more cycles per operation.
 \input{conflict_heatmaps}
 \subsection{Desirable Properties of Placement Functions}\label{sec:mot_conflict}
 
