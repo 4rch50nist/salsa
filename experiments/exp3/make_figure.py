@@ -74,8 +74,8 @@ if itch:
 \begin{axis}[width=0.27\textwidth, """ + STYLE + r""", minor x tick num=1,
   xmin=0, xmax=""" + f"{imax:g}" + r""", xlabel={Operations (Millions)}, ylabel={Cycles per Operation}, ylabel style={yshift=-2pt},
   title={(a) NASDAQ ITCH order flow}]
-""" + ref(0, imax) + series(IA, "ia", BAND_A, SOLID) + series(IQ, "iq", BAND_F, DASH) + r"""  \addlegendimage{""" + SOLID + r"""}\addlegendentry{All eight symbols}
-  \addlegendimage{""" + DASH + r"""}\addlegendentry{QQQ alone}
+""" + ref(0, imax) + series(IA, "ia", BAND_A, SOLID) + series(IQ, "iq", BAND_F, DASH) + r"""  \addlegendimage{""" + SOLID + r"""}\addlegendentry{All 8 symbols}
+  \addlegendimage{""" + DASH + r"""}\addlegendentry{QQQ}
 \end{axis}
 \end{tikzpicture}\hspace{0.035\textwidth}%
 """)
@@ -99,16 +99,14 @@ parts.append(r"""\begin{tikzpicture}
 \end{tikzpicture}
 """)
 
-genome_cap = (f"SARS-CoV-2 amplicon coverage for all {nw} samples of a multiplexed ARTIC nanopore run and for the busiest sample alone, "
-              "where each read adds its coverage on arrival and every 60\\,s of run time the coverage of every amplicon in every sample is queried, as in minoTour~\\cite{munro2023}; "
-              f"({lc})~the boxed burst of ({lb}), magnified, in which minoTour's query sweeps (one cycle per operation) alternate with stretches of read updates.")
 if itch:
-    cap = ("Cycles per operation of a pipeline that stalls whenever an operation needs a write still in flight, on the same vertical scale: "
-           "(a)~NASDAQ ITCH order flow for all eight symbols and for QQQ alone; (b)~" + genome_cap)
+    panels = "(a)~NASDAQ ITCH order flow, (b)~genome coverage, and (c)~the burst boxed in (b), magnified"
 else:
-    cap = "Cycles per operation of a pipeline that stalls whenever an operation needs a write still in flight, on the same vertical scale: (a)~" + genome_cap
-cap += " The grey line at 1 marks one cycle per operation; lines are medians, and bands span the 10th to 90th percentiles."
+    panels = "(a)~genome coverage, and (b)~the burst boxed in (a), magnified"
+cap = ("Cycles per operation (CPO) of a pipeline that stalls on read-after-write hazards, on " + panels + ". "
+       f"Lines are medians over groups of {G * WIN:,} operations, and grey bands span their 10th to 90th percentiles; "
+       "the grey line at 1 marks one cycle per operation, the CPO without stalls. All panels share one vertical scale.")
 
-tex = ("\\begin{figure*}[!t]\n\\centering\n" + "".join(parts) + "\\caption{" + cap + "}\n\\label{fig:rw_throughput}\n\\end{figure*}\n")
+tex = ("\\usepgfplotslibrary{fillbetween}\n\\begin{figure*}[!t]\n\\centering\n" + "".join(parts) + "\\caption{" + cap + "}\n\\label{fig:rw_throughput}\n\\end{figure*}\n")
 open("rw_hazards_fig.tex", "w").write(tex)
 print("wrote rw_hazards_fig.tex" + ("" if itch else f" (genome panels only: no ITCH results in {ITCH})"))
