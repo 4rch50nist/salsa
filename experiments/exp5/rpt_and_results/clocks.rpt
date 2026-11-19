@@ -1,0 +1,46 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2026.1 (win64) Build 6511674 Tue Jun 16 11:02:23 MDT 2026
+| Date              : Sun Oct 18 21:39:43 2026
+| Host              : Asus running 64-bit major release  (build 9200)
+| Command           : report_clocks -file C:/salsa_runs/2026-10-18_2139_salsa_300MHz_r1/build/clocks.rpt
+| Design            : dma_loopback_wrapper
+| Device            : xczu7ev-ffvc1156
+| Speed File        : -2  PRODUCTION 1.31 12-08-2025
+| Design State      : Physopt postRoute
+| Temperature Grade : E
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+Clock Report
+
+
+Attributes
+  P: Propagated
+  G: Generated
+  A: Auto-derived
+  R: Renamed
+  V: Virtual
+  I: Inverted
+  S: Pin phase-shifted with Latency mode
+
+Clock     Period(ns)  Waveform(ns)   Attributes  Sources
+clk_pl_0  3.333       {0.000 1.666}  P           {dma_loopback_i/zynq_ultra_ps_e_0/inst/PS8_i/PLCLK[0]}
+
+
+====================================================
+Generated Clocks
+====================================================
+
+
+
+====================================================
+User Uncertainty
+====================================================
+
+
+
+====================================================
+User Jitter
+====================================================
+
+
